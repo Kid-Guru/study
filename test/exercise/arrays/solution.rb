@@ -24,10 +24,10 @@ module Exercise
         end
       end
 
-      def search(_array, _query)
-        return -1 if _array.empty?
+      def search(array, query)
+        return -1 if array.empty?
 
-        _iter_search(_array, _query, 0, _array.length)
+        _iter_search(array, query, 0, array.length)
       end
     end
   end
