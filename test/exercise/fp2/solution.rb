@@ -5,10 +5,13 @@ module Exercise
       # Использовать свои написанные функции для реализации следующих - можно.
 
       # Написать свою функцию my_each
-      def my_each
-        for el in self
-          yield el
-        end
+      def my_each(&blk)
+        return if empty?
+
+        first, *rest = self
+        yield first
+        MyArray.new(rest).my_each(&blk)
+        self
       end
 
       # Написать свою функцию my_map
@@ -20,31 +23,16 @@ module Exercise
 
       # Написать свою функцию my_compact
       def my_compact
-        result = my_reduce([]) do |acc, el|
-          if el.nil?
-            acc
-          else
-            acc << el
-          end
-        end
+        result = my_reduce([]) { |acc, el| el.nil? ? acc : acc << el }
         MyArray.new(result)
       end
 
       # Написать свою функцию my_reduce
-      def my_reduce(acc = 'no_argument_passed')
-        first_iteration = true
+      def my_reduce(init = 'no_argument_passed')
+        acc = init == 'no_argument_passed' ? self[0] : init
+        rest = init == 'no_argument_passed' ? drop(1) : self
 
-        my_each do |el|
-          if first_iteration
-            first_iteration = false
-            if acc == 'no_argument_passed'
-              acc = self[0]
-              next
-            end
-          end
-
-          acc = yield acc, el
-        end
+        rest.my_each { |el| acc = yield acc, el }
         acc
       end
     end
